@@ -540,13 +540,13 @@ class ShareViewer {
      */
     initializeVideoControls(playerId) {
         const video = document.getElementById(playerId);
-        const playBtn = document.getElementById(\`playBtn_${playerId}`);
-        const progressBar = document.getElementById(\`progressBar_${playerId}`);
-        const progress = document.getElementById(\`progress_${playerId}`);
-        const currentTime = document.getElementById(\`currentTime_${playerId}`);
-        const duration = document.getElementById(\`duration_${playerId}`);
-        const muteBtn = document.getElementById(\`muteBtn_${playerId}`);
-        const fullscreenBtn = document.getElementById(\`fullscreenBtn_${playerId}`);
+        const playBtn = document.getElementById(`playBtn_${playerId}`);
+        const progressBar = document.getElementById(`progressBar_${playerId}`);
+        const progress = document.getElementById(`progress_${playerId}`);
+        const currentTime = document.getElementById(`currentTime_${playerId}`);
+        const duration = document.getElementById(`duration_${playerId}`);
+        const muteBtn = document.getElementById(`muteBtn_${playerId}`);
+        const fullscreenBtn = document.getElementById(`fullscreenBtn_${playerId}`);
 
         // Play/Pause
         playBtn.addEventListener('click', () => {
@@ -599,13 +599,13 @@ class ShareViewer {
      */
     initializeAudioControls(playerId) {
         const audio = document.getElementById(playerId);
-        const playBtn = document.getElementById(\`playBtn_${playerId}`);
-        const progressBar = document.getElementById(\`progressBar_${playerId}`);
-        const progress = document.getElementById(\`progress_${playerId}`);
-        const currentTime = document.getElementById(\`currentTime_${playerId}`);
-        const duration = document.getElementById(\`duration_${playerId}`);
-        const muteBtn = document.getElementById(\`muteBtn_${playerId}`);
-        const playIndicator = document.getElementById(\`playIndicator_${playerId}`);
+        const playBtn = document.getElementById(`playBtn_${playerId}`);
+        const progressBar = document.getElementById(`progressBar_${playerId}`);
+        const progress = document.getElementById(`progress_${playerId}`);
+        const currentTime = document.getElementById(`currentTime_${playerId}`);
+        const duration = document.getElementById(`duration_${playerId}`);
+        const muteBtn = document.getElementById(`muteBtn_${playerId}`);
+        const playIndicator = document.getElementById(`playIndicator_${playerId}`);
 
         // Play/Pause
         playBtn.addEventListener('click', () => {
@@ -659,7 +659,7 @@ class ShareViewer {
         if (isNaN(seconds)) return '0:00';
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
-        return \`${mins}:${secs.toString().padStart(2, '0')}`;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 
     /**
@@ -755,7 +755,7 @@ class ShareViewer {
             info: 'bg-blue-600 text-white'
         };
         
-        toast.className += \` ${colors[type] || colors.info}`;
+        toast.className += ` ${colors[type] || colors.info}`;
         toast.textContent = message;
         
         document.body.appendChild(toast);
