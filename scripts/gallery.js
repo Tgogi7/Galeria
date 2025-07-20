@@ -80,6 +80,10 @@ class GalleryApp {
         // Header actions
         document.getElementById('logoutBtn').addEventListener('click', () => this.logout());
         
+        // Mobile menu
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => this.toggleMobileSidebar());
+        document.getElementById('sidebarOverlay').addEventListener('click', () => this.closeMobileSidebar());
+        
         // Upload area
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
@@ -122,6 +126,35 @@ class GalleryApp {
         // Prevent default drag behavior
         document.addEventListener('dragover', (e) => e.preventDefault());
         document.addEventListener('drop', (e) => e.preventDefault());
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                this.closeMobileSidebar();
+            }
+        });
+    }
+
+    /**
+     * Alterna el sidebar móvil
+     */
+    toggleMobileSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+    }
+
+    /**
+     * Cierra el sidebar móvil
+     */
+    closeMobileSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
     }
 
     /**
@@ -745,10 +778,8 @@ class GalleryApp {
         const imageElement = document.getElementById('viewerImage');
         
         // Limpiar contenido anterior
-        const existingMedia = viewerContainer.querySelector('video, audio, .custom-media-player');
-        if (existingMedia) {
-            existingMedia.remove();
-        }
+        const existingMedia = viewerContainer.querySelectorAll('video, audio, .custom-media-player');
+        existingMedia.forEach(el => el.remove());
         
         imageElement.style.display = 'block';
         imageElement.src = file.path;
@@ -774,10 +805,8 @@ class GalleryApp {
         const imageElement = document.getElementById('viewerImage');
         
         // Limpiar contenido anterior
-        const existingMedia = viewerContainer.querySelector('video, audio, .custom-media-player');
-        if (existingMedia) {
-            existingMedia.remove();
-        }
+        const existingMedia = viewerContainer.querySelectorAll('video, audio, .custom-media-player');
+        existingMedia.forEach(el => el.remove());
         
         imageElement.style.display = 'none';
         
@@ -800,10 +829,10 @@ class GalleryApp {
      */
     createCustomVideoPlayer(file, container, beforeElement) {
         const playerContainer = document.createElement('div');
-        playerContainer.className = 'custom-media-player relative max-w-4xl mx-auto';
+        playerContainer.className = 'custom-media-player relative max-w-4xl mx-auto px-4 md:px-0';
         
         playerContainer.innerHTML = `
-            <video class="w-full max-h-[80vh] object-contain rounded-lg bg-black" 
+            <video class="w-full max-h-[70vh] md:max-h-[80vh] object-contain rounded-lg bg-black" 
                    src="${file.path}" 
                    controls
                    preload="metadata">
@@ -819,15 +848,15 @@ class GalleryApp {
      */
     createCustomAudioPlayer(file, container, beforeElement) {
         const playerContainer = document.createElement('div');
-        playerContainer.className = 'custom-media-player flex flex-col items-center justify-center p-8 max-w-2xl mx-auto';
+        playerContainer.className = 'custom-media-player flex flex-col items-center justify-center p-4 md:p-8 max-w-2xl mx-auto';
         
         playerContainer.innerHTML = `
-            <div class="w-64 h-64 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mb-8 shadow-2xl">
-                <svg class="w-32 h-32 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <div class="w-48 h-48 md:w-64 md:h-64 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mb-6 md:mb-8 shadow-2xl">
+                <svg class="w-24 h-24 md:w-32 md:h-32 text-white" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
                 </svg>
             </div>
-            <audio src="${file.path}" controls class="w-full max-w-lg rounded-lg">
+            <audio src="${file.path}" controls class="w-full max-w-lg rounded-lg bg-white bg-opacity-10 backdrop-blur-sm">
                 Tu navegador no soporta la reproducción de audio.
             </audio>
         `;

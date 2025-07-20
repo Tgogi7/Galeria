@@ -97,7 +97,7 @@
 
     <div class="flex min-h-screen">
         <!-- Sidebar -->
-        <aside class="w-64 bg-white shadow-sm border-r">
+        <aside id="sidebar" class="w-64 bg-white shadow-sm border-r fixed md:relative h-full md:h-auto z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
             <div class="p-4">
                 <!-- Búsqueda -->
                 <div class="mb-6">
@@ -184,35 +184,44 @@
         </aside>
 
         <!-- Contenido principal -->
-        <main class="flex-1 p-6">
+        <main class="flex-1 p-4 md:p-6 ml-0 md:ml-0">
+            <!-- Mobile menu button -->
+            <div class="md:hidden mb-4">
+                <button id="mobileMenuBtn" class="p-2 bg-gray-100 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+
             <!-- Breadcrumb -->
             <nav id="breadcrumb" class="mb-6 text-sm text-gray-600"></nav>
 
             <!-- Área de subida -->
-            <div id="uploadArea" class="mb-6 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors cursor-pointer">
+            <div id="uploadArea" class="mb-6 border-2 border-dashed border-gray-300 rounded-lg p-4 md:p-8 text-center hover:border-gray-400 transition-colors cursor-pointer">
                 <div class="text-gray-500">
                     <svg class="mx-auto h-12 w-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                     </svg>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Subir archivos</h3>
-                    <p>Arrastra y suelta archivos aquí o haz clic para seleccionar</p>
-                    <p class="text-sm mt-1">Soporta: JPG, PNG, GIF, WebP, MP4, MOV, AVI</p>
-                    <p class="text-sm">Audio: MP3, WAV, OGG, AAC, M4A, FLAC</p>
+                    <h3 class="text-base md:text-lg font-medium text-gray-900 mb-2">Subir archivos</h3>
+                    <p class="text-sm md:text-base">Arrastra y suelta archivos aquí o haz clic para seleccionar</p>
+                    <p class="text-xs md:text-sm mt-1">Soporta: JPG, PNG, GIF, WebP, MP4, MOV, AVI</p>
+                    <p class="text-xs md:text-sm">Audio: MP3, WAV, OGG, AAC, M4A, FLAC</p>
                 </div>
                 <input type="file" id="fileInput" multiple accept="image/*,video/*,audio/*" class="hidden">
             </div>
 
             <!-- Controles de selección -->
-            <div class="mb-4 flex justify-between items-center">
-                <div class="flex space-x-2">
-                    <button id="selectAllBtn" class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+            <div class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                <div class="flex flex-wrap gap-2">
+                    <button id="selectAllBtn" class="px-3 py-1 text-xs md:text-sm border border-gray-300 rounded hover:bg-gray-50 transition-colors">
                         Seleccionar todo
                     </button>
-                    <button id="downloadSelectedBtn" disabled class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors">
+                    <button id="downloadSelectedBtn" disabled class="px-3 py-1 text-xs md:text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors">
                         Descargar seleccionados
                     </button>
                 </div>
-                <div class="text-sm text-gray-500">
+                <div class="text-xs md:text-sm text-gray-500">
                     <span>💡 Mantén presionado para seleccionar archivos individuales</span>
                 </div>
             </div>
@@ -230,9 +239,12 @@
             </div>
 
             <!-- Galería -->
-            <div id="galleryGrid" class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div>
+            <div id="galleryGrid" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-4"></div>
         </main>
     </div>
+
+    <!-- Mobile sidebar overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden md:hidden"></div>
 
     <!-- Modal: Crear Carpeta -->
     <div id="createFolderModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">

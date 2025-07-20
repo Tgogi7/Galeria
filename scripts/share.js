@@ -275,7 +275,11 @@ class ShareViewer {
                     ${this.formatFileSize(file.size)} • ${this.formatDate(file.createdAt)}
                 </p>
             </div>
-        `;
+            if (isVideo || isAudio) {
+                this.showMediaViewer(file);
+            } else {
+                this.showImageViewer(file);
+            }
 
         // Configurar event listeners según el tipo y protección
         if (this.isProtected) {
@@ -322,17 +326,22 @@ class ShareViewer {
      * @param {Object} file - Datos del archivo
      */
     showImageViewer(file) {
+        this.currentImageFile = file;
         const viewerContainer = document.getElementById('imageViewerModal');
         const imageElement = document.getElementById('viewerImage');
         
         // Limpiar contenido anterior
-        const existingMedia = viewerContainer.querySelector('.custom-protected-player');
+        const existingMedia = viewerContainer.querySelector('video, audio, .custom-media-player');
         if (existingMedia) {
             existingMedia.remove();
         }
         
         imageElement.style.display = 'block';
         imageElement.src = file.path;
+        
+        if (this.isProtected) {
+            imageElement.classList.add('protected-content', 'no-drag');
+        }
         
         const titleElement = document.getElementById('viewerTitle');
         const descElement = document.getElementById('viewerDescription');
@@ -347,6 +356,7 @@ class ShareViewer {
      * @param {Object} file - Datos del archivo
      */
     showMediaViewer(file) {
+        this.currentImageFile = file;
         const isVideo = file.type.startsWith('video/');
         const isAudio = file.type.startsWith('audio/');
         
@@ -354,7 +364,7 @@ class ShareViewer {
         const imageElement = document.getElementById('viewerImage');
         
         // Limpiar contenido anterior
-        const existingMedia = viewerContainer.querySelector('.custom-protected-player');
+        const existingMedia = viewerContainer.querySelector('video, audio, .custom-media-player');
         if (existingMedia) {
             existingMedia.remove();
         }
@@ -362,9 +372,9 @@ class ShareViewer {
         imageElement.style.display = 'none';
         
         if (isVideo) {
-            this.createProtectedVideoPlayer(file, imageElement.parentNode, imageElement);
+            this.createVideoPlayer(file, imageElement.parentNode, imageElement);
         } else if (isAudio) {
-            this.createProtectedAudioPlayer(file, imageElement.parentNode, imageElement);
+            this.createAudioPlayer(file, imageElement.parentNode, imageElement);
         }
         
         const titleElement = document.getElementById('viewerTitle');
@@ -376,46 +386,45 @@ class ShareViewer {
     }
 
     /**
-     * Crea un reproductor de video protegido personalizado
+     * Crea un reproductor de video personalizado
      */
-    createProtectedVideoPlayer(file, container, beforeElement) {
+    createVideoPlayer(file, container, beforeElement) {
         const playerId = 'protectedVideo_' + Date.now();
         const playerContainer = document.createElement('div');
-        playerContainer.className = 'custom-protected-player relative max-w-4xl mx-auto bg-black rounded-lg overflow-hidden';
+        playerContainer.className = 'custom-media-player relative max-w-4xl mx-auto bg-black rounded-lg overflow-hidden';
         
         playerContainer.innerHTML = `
-            <video id="${playerId}" class="w-full max-h-[80vh] object-contain" 
+            <video id="${playerId}" class="w-full max-h-[80vh] object-contain ${this.isProtected ? 'protected-content no-drag' : ''}" 
                    src="${file.path}" 
-                   preload="metadata"
-                   style="outline: none;">
+                   preload="metadata">
                 Tu navegador no soporta la reproducción de video.
             </video>
             
             <!-- Controles personalizados -->
-            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-4">
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-2 md:p-4">
                 <div class="flex items-center space-x-4">
                     <button id="playBtn_${playerId}" class="text-white hover:text-blue-400 transition-colors">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
                         </svg>
                     </button>
                     
                     <div class="flex-1 flex items-center space-x-2">
-                        <span id="currentTime_${playerId}" class="text-white text-sm">0:00</span>
+                        <span id="currentTime_${playerId}" class="text-white text-xs md:text-sm">0:00</span>
                         <div class="flex-1 bg-gray-600 rounded-full h-2 cursor-pointer" id="progressBar_${playerId}">
                             <div class="bg-blue-500 h-2 rounded-full transition-all" id="progress_${playerId}" style="width: 0%"></div>
                         </div>
-                        <span id="duration_${playerId}" class="text-white text-sm">0:00</span>
+                        <span id="duration_${playerId}" class="text-white text-xs md:text-sm">0:00</span>
                     </div>
                     
                     <button id="muteBtn_${playerId}" class="text-white hover:text-blue-400 transition-colors">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
                     </button>
                     
-                    <button id="fullscreenBtn_${playerId}" class="text-white hover:text-blue-400 transition-colors">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <button id="fullscreenBtn_${playerId}" class="text-white hover:text-blue-400 transition-colors ${this.isProtected ? 'hidden' : ''}">
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
                         </svg>
                     </button>
@@ -425,19 +434,24 @@ class ShareViewer {
         
         container.insertBefore(playerContainer, beforeElement);
         this.initializeVideoControls(playerId);
+        
+        // Aplicar protecciones si es necesario
+        if (this.isProtected) {
+            this.applyVideoProtections(playerId);
+        }
     }
 
     /**
-     * Crea un reproductor de audio protegido personalizado
+     * Crea un reproductor de audio personalizado
      */
-    createProtectedAudioPlayer(file, container, beforeElement) {
+    createAudioPlayer(file, container, beforeElement) {
         const playerId = 'protectedAudio_' + Date.now();
         const playerContainer = document.createElement('div');
-        playerContainer.className = 'custom-protected-player flex flex-col items-center justify-center p-8 max-w-2xl mx-auto';
+        playerContainer.className = 'custom-media-player flex flex-col items-center justify-center p-4 md:p-8 max-w-2xl mx-auto';
         
         playerContainer.innerHTML = `
-            <div class="w-64 h-64 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mb-8 shadow-2xl relative">
-                <svg class="w-32 h-32 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <div class="w-48 h-48 md:w-64 md:h-64 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mb-6 md:mb-8 shadow-2xl relative">
+                <svg class="w-24 h-24 md:w-32 md:h-32 text-white" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
                 </svg>
                 
@@ -447,32 +461,32 @@ class ShareViewer {
                 </div>
             </div>
             
-            <audio id="${playerId}" src="${file.path}" preload="metadata" style="display: none;">
+            <audio id="${playerId}" src="${file.path}" preload="metadata" class="${this.isProtected ? 'protected-content' : ''}" style="display: none;">
                 Tu navegador no soporta la reproducción de audio.
             </audio>
             
             <!-- Controles personalizados -->
-            <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-6 w-full max-w-lg">
-                <div class="flex items-center space-x-4 mb-4">
+            <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-4 md:p-6 w-full max-w-lg">
+                <div class="flex items-center space-x-2 md:space-x-4 mb-4">
                     <button id="playBtn_${playerId}" class="text-white hover:text-blue-400 transition-colors">
-                        <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-8 h-8 md:w-12 md:h-12" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
                         </svg>
                     </button>
                     
                     <div class="flex-1">
-                        <div class="text-white font-medium text-lg mb-1 truncate">${file.name}</div>
+                        <div class="text-white font-medium text-sm md:text-lg mb-1 truncate">${file.name}</div>
                         <div class="flex items-center space-x-2">
-                            <span id="currentTime_${playerId}" class="text-white text-sm">0:00</span>
+                            <span id="currentTime_${playerId}" class="text-white text-xs md:text-sm">0:00</span>
                             <div class="flex-1 bg-white bg-opacity-30 rounded-full h-2 cursor-pointer" id="progressBar_${playerId}">
                                 <div class="bg-white h-2 rounded-full transition-all" id="progress_${playerId}" style="width: 0%"></div>
                             </div>
-                            <span id="duration_${playerId}" class="text-white text-sm">0:00</span>
+                            <span id="duration_${playerId}" class="text-white text-xs md:text-sm">0:00</span>
                         </div>
                     </div>
                     
                     <button id="muteBtn_${playerId}" class="text-white hover:text-blue-400 transition-colors">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
                     </button>
@@ -482,6 +496,47 @@ class ShareViewer {
         
         container.insertBefore(playerContainer, beforeElement);
         this.initializeAudioControls(playerId);
+        
+        // Aplicar protecciones si es necesario
+        if (this.isProtected) {
+            this.applyAudioProtections(playerId);
+        }
+    }
+
+    /**
+     * Aplica protecciones específicas al reproductor de video
+     */
+    applyVideoProtections(playerId) {
+        const video = document.getElementById(playerId);
+        if (video) {
+            // Bloquear menú contextual específicamente en el video
+            video.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                return false;
+            });
+            
+            // Bloquear teclas específicas en el video
+            video.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && ['s', 'a', 'c'].includes(e.key.toLowerCase())) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        }
+    }
+
+    /**
+     * Aplica protecciones específicas al reproductor de audio
+     */
+    applyAudioProtections(playerId) {
+        const audio = document.getElementById(playerId);
+        if (audio) {
+            // Bloquear menú contextual específicamente en el audio
+            audio.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                return false;
+            });
+        }
     }
 
     /**
@@ -501,10 +556,10 @@ class ShareViewer {
         playBtn.addEventListener('click', () => {
             if (video.paused) {
                 video.play();
-                playBtn.innerHTML = '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+                playBtn.innerHTML = '<svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
             } else {
                 video.pause();
-                playBtn.innerHTML = '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+                playBtn.innerHTML = '<svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
             }
         });
 
@@ -529,16 +584,18 @@ class ShareViewer {
         muteBtn.addEventListener('click', () => {
             video.muted = !video.muted;
             muteBtn.innerHTML = video.muted ? 
-                '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>' :
-                '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>';
+                '<svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>' :
+                '<svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>';
         });
 
         // Fullscreen
-        fullscreenBtn.addEventListener('click', () => {
-            if (video.requestFullscreen) {
-                video.requestFullscreen();
-            }
-        });
+        if (fullscreenBtn && !this.isProtected) {
+            fullscreenBtn.addEventListener('click', () => {
+                if (video.requestFullscreen) {
+                    video.requestFullscreen();
+                }
+            });
+        }
     }
 
     /**
@@ -558,11 +615,11 @@ class ShareViewer {
         playBtn.addEventListener('click', () => {
             if (audio.paused) {
                 audio.play();
-                playBtn.innerHTML = '<svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+                playBtn.innerHTML = '<svg class="w-8 h-8 md:w-12 md:h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
                 playIndicator.style.opacity = '1';
             } else {
                 audio.pause();
-                playBtn.innerHTML = '<svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+                playBtn.innerHTML = '<svg class="w-8 h-8 md:w-12 md:h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
                 playIndicator.style.opacity = '0';
             }
         });
@@ -588,14 +645,14 @@ class ShareViewer {
         muteBtn.addEventListener('click', () => {
             audio.muted = !audio.muted;
             muteBtn.innerHTML = audio.muted ? 
-                '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>' :
-                '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>';
+                '<svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>' :
+                '<svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>';
         });
 
         // Auto-hide indicator when audio ends
         audio.addEventListener('ended', () => {
             playIndicator.style.opacity = '0';
-            playBtn.innerHTML = '<svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+            playBtn.innerHTML = '<svg class="w-8 h-8 md:w-12 md:h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
         });
     }
 
@@ -615,12 +672,13 @@ class ShareViewer {
     hideImageViewer() {
         // Limpiar elementos de media
         const viewerContainer = document.getElementById('imageViewerModal');
-        const existingMedia = viewerContainer.querySelectorAll('.custom-protected-player');
+        const existingMedia = viewerContainer.querySelectorAll('video, audio, .custom-media-player');
         existingMedia.forEach(el => el.remove());
         
         // Restaurar imagen
         document.getElementById('viewerImage').style.display = 'block';
         document.getElementById('imageViewerModal').classList.add('hidden');
+        this.currentImageFile = null;
     }
 
     /**
