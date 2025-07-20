@@ -275,11 +275,7 @@ class ShareViewer {
                     ${this.formatFileSize(file.size)} • ${this.formatDate(file.createdAt)}
                 </p>
             </div>
-            if (isVideo || isAudio) {
-                this.showMediaViewer(file);
-            } else {
-                this.showImageViewer(file);
-            }
+        `;
 
         // Configurar event listeners según el tipo y protección
         if (this.isProtected) {
@@ -544,13 +540,13 @@ class ShareViewer {
      */
     initializeVideoControls(playerId) {
         const video = document.getElementById(playerId);
-        const playBtn = document.getElementById(`playBtn_${playerId}`);
-        const progressBar = document.getElementById(`progressBar_${playerId}`);
-        const progress = document.getElementById(`progress_${playerId}`);
-        const currentTime = document.getElementById(`currentTime_${playerId}`);
-        const duration = document.getElementById(`duration_${playerId}`);
-        const muteBtn = document.getElementById(`muteBtn_${playerId}`);
-        const fullscreenBtn = document.getElementById(`fullscreenBtn_${playerId}`);
+        const playBtn = document.getElementById(\`playBtn_${playerId}`);
+        const progressBar = document.getElementById(\`progressBar_${playerId}`);
+        const progress = document.getElementById(\`progress_${playerId}`);
+        const currentTime = document.getElementById(\`currentTime_${playerId}`);
+        const duration = document.getElementById(\`duration_${playerId}`);
+        const muteBtn = document.getElementById(\`muteBtn_${playerId}`);
+        const fullscreenBtn = document.getElementById(\`fullscreenBtn_${playerId}`);
 
         // Play/Pause
         playBtn.addEventListener('click', () => {
@@ -603,13 +599,13 @@ class ShareViewer {
      */
     initializeAudioControls(playerId) {
         const audio = document.getElementById(playerId);
-        const playBtn = document.getElementById(`playBtn_${playerId}`);
-        const progressBar = document.getElementById(`progressBar_${playerId}`);
-        const progress = document.getElementById(`progress_${playerId}`);
-        const currentTime = document.getElementById(`currentTime_${playerId}`);
-        const duration = document.getElementById(`duration_${playerId}`);
-        const muteBtn = document.getElementById(`muteBtn_${playerId}`);
-        const playIndicator = document.getElementById(`playIndicator_${playerId}`);
+        const playBtn = document.getElementById(\`playBtn_${playerId}`);
+        const progressBar = document.getElementById(\`progressBar_${playerId}`);
+        const progress = document.getElementById(\`progress_${playerId}`);
+        const currentTime = document.getElementById(\`currentTime_${playerId}`);
+        const duration = document.getElementById(\`duration_${playerId}`);
+        const muteBtn = document.getElementById(\`muteBtn_${playerId}`);
+        const playIndicator = document.getElementById(\`playIndicator_${playerId}`);
 
         // Play/Pause
         playBtn.addEventListener('click', () => {
@@ -663,7 +659,7 @@ class ShareViewer {
         if (isNaN(seconds)) return '0:00';
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
+        return \`${mins}:${secs.toString().padStart(2, '0')}`;
     }
 
     /**
@@ -751,7 +747,7 @@ class ShareViewer {
     showToast(message, type = 'info') {
         // Crear toast dinámicamente
         const toast = document.createElement('div');
-        toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg max-w-sm transition-all duration-300 transform translate-x-full`;
+        toast.className = \`fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg max-w-sm transition-all duration-300 transform translate-x-full`;
         
         const colors = {
             success: 'bg-green-600 text-white',
@@ -759,7 +755,7 @@ class ShareViewer {
             info: 'bg-blue-600 text-white'
         };
         
-        toast.className += ` ${colors[type] || colors.info}`;
+        toast.className += \` ${colors[type] || colors.info}`;
         toast.textContent = message;
         
         document.body.appendChild(toast);
