@@ -1,0 +1,20 @@
+{
+    "687ae2858a691e7094482f1d488c8": {
+        "shareId": "687ae2858a691e7094482f1d488c8",
+        "token": "cb2205e9634128ab62ee2c7e4ebf97bb",
+        "url": "http:\/\/localhost\/otro\/share.html?id=687ae2858a691e7094482f1d488c8&token=cb2205e9634128ab62ee2c7e4ebf97bb",
+        "userId": "68787e812ccf315e9d8a367057072",
+        "folderId": "root",
+        "protectedDownload": false,
+        "createdAt": "2025-07-19T02:10:45+02:00"
+    },
+    "687ae3a0c00ddd42b154188eb769c": {
+        "shareId": "687ae3a0c00ddd42b154188eb769c",
+        "token": "2a8828178bc6ec033b595af562b3f05a",
+        "url": "http:\/\/localhost\/otro\/share.html?id=687ae3a0c00ddd42b154188eb769c&token=2a8828178bc6ec033b595af562b3f05a",
+        "userId": "68787e812ccf315e9d8a367057072",
+        "folderId": "root",
+        "protectedDownload": true,
+        "createdAt": "2025-07-19T02:15:28+02:00"
+    }
+}
