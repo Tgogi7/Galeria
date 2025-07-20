@@ -1,4 +1,3 @@
-
 /* Estilos personalizados para Galería Privada */
 
 * {
@@ -230,9 +229,17 @@ video, audio {
 .custom-media-player audio {
     outline: none;
     border: none;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     border-radius: 12px;
-    padding: 8px;
+    padding: 4px 8px;
+    width: 100%;
+    max-width: 100%;
+}
+
+@media (min-width: 768px) {
+    .custom-media-player audio {
+        padding: 8px;
+    }
 }
 
 /* Animaciones para indicadores de reproducción */
@@ -327,4 +334,150 @@ video, audio {
 
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(139, 92, 246, 0.8);
+}
+
+/* Mejoras para móviles */
+@media (max-width: 767px) {
+    /* Contenedor principal */
+    body {
+        overflow-x: hidden;
+    }
+    
+    /* Sidebar móvil */
+    #sidebar {
+        width: 280px;
+        max-width: 80vw;
+        height: 100vh;
+        overflow-y: auto;
+    }
+    
+    /* Ajustes para el área de subida */
+    #uploadArea {
+        padding: 2rem 1rem;
+    }
+    
+    #uploadArea svg {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+    
+    #uploadArea h3 {
+        font-size: 1rem;
+    }
+    
+    #uploadArea p {
+        font-size: 0.875rem;
+    }
+    
+    /* Ajustes para controles de selección */
+    .selection-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+    
+    /* Ajustes para breadcrumb */
+    .breadcrumb-item {
+        font-size: 0.875rem;
+    }
+    
+    /* Ajustes para modales */
+    .modal-content {
+        margin: 1rem;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+    }
+    
+    /* Ajustes para el visor de imágenes */
+    #imageViewerModal .relative {
+        margin: 0.5rem;
+    }
+    
+    /* Ajustes para reproductores de audio en móvil */
+    .custom-media-player audio {
+        height: 48px;
+        min-height: 40px;
+    }
+    
+    /* Ajustes para reproductores de video en móvil */
+    .custom-media-player video {
+        max-height: 60vh;
+        width: 100%;
+    }
+    
+    /* Ajustes para reproductores personalizados en share */
+    .custom-media-player {
+        padding: 1rem !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .custom-media-player .bg-gradient-to-br {
+        width: 200px !important;
+        height: 200px !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .custom-media-player .bg-gradient-to-br svg {
+        width: 5rem !important;
+        height: 5rem !important;
+    }
+    
+    .custom-media-player .bg-white.bg-opacity-10 {
+        padding: 1rem !important;
+        margin: 0 !important;
+    }
+    
+    /* Ajustes para controles de audio en móvil */
+    .custom-media-player .flex.items-center.space-x-2 button svg {
+        width: 2rem !important;
+        height: 2rem !important;
+    }
+    
+    .custom-media-player .flex.items-center.space-x-2 .flex-1 .text-white {
+        font-size: 0.875rem !important;
+    }
+    
+    /* Header responsivo */
+    header .container .flex {
+        gap: 0.5rem;
+    }
+    
+    header h1 {
+        font-size: 1.125rem;
+    }
+    
+    /* Footer responsivo */
+    footer .container {
+        padding: 1rem;
+    }
+    
+    /* Galería responsiva */
+    .gallery-grid {
+        padding: 0 0.5rem;
+    }
+    
+    /* Protección de contenido en móvil */
+    .protected-content {
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+    
+    /* Evitar zoom accidental */
+    input, textarea, select {
+        font-size: 16px !important;
+    }
+    
+    /* Ajustes para botones en móvil */
+    button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Espaciado mejorado */
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
 }
